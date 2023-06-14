@@ -1,3 +1,4 @@
+from blog_format import format
 from urllib.parse import urlparse
 
 # create a function to extract the slug from the web address
@@ -25,4 +26,5 @@ def extract_specific_text(soup):
         dict [x] = [element.name, element.text]
         x += 1
    
-    print(dict)
+    format(dict)
+    return(dict)

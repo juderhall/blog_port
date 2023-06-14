@@ -16,7 +16,6 @@ response = requests.get(web_address, headers=headers)
 
 if response.status_code == 200:
     soup = BeautifulSoup(response.text, 'html.parser')
-    extract_slug(web_address)
-    extract_specific_text(soup)
+    print(extract_slug(web_address), extract_specific_text(soup))
 else:
     print("Failed to fetch the web page. Status code:", response.status_code)
