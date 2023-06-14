@@ -1,0 +1,5 @@
+# create a function to extract the image urls from the web page
+def extract_image_urls(soup):
+    images = [img['src'] for img in soup.find_all('img') if 'src' in img.attrs]
+    for image in images:
+        print(image)
