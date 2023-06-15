@@ -39,4 +39,4 @@ if response.ok:
             soup[souper].remove('')
     #This is looking like a more delicious soup isnt it?
     for url in range(len(soup)): soup[url][0] = soup[url][0].replace('https://zenpayments.com/', '').replace('/', '')
-    for x in soup: print(x[0])   
+    for x in soup: print(x)
