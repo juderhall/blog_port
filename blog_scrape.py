@@ -27,4 +27,10 @@ def extract_specific_text(soup):
         x += 1
    
     format(dict)
-    return(dict)
+    
+    try:
+        f = open("README", "w")
+        for key in dict:
+            f.write(dict[key][1] + "\n")
+    except Exception:
+        print("Could not print to file")        
