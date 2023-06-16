@@ -10,15 +10,12 @@ object of the following format:
 
 from bs4 import BeautifulSoup
 import requests
-import json
 
-
-def scrapeBasicBlogInfo() -> None:
+def scrapeBasicBlogInfo() -> list:
     headers = {
         "User-Agent": "Blog Scraper https://github.com/juderhall/codespaces-get_blog_info)",
         "Email": "nick@zenpayments.com"
     }
-
     web_address = "https://zenpayments.com/post-sitemap.xml"
     response = requests.get(web_address, headers=headers)
     if response.ok:
@@ -30,7 +27,6 @@ def scrapeBasicBlogInfo() -> None:
                 if tag in soup[blog]:
                     soup[blog] = soup[blog].replace(tag, '')
         soup = soup[1:]
-        sauce = 0
         for souper in range(len(soup)):
             soup[souper] = soup[souper].split('<loc>')
             #This is disgusting, I am sorry
@@ -39,6 +35,4 @@ def scrapeBasicBlogInfo() -> None:
                 soup[souper].remove('')
         #This is looking like a more delicious soup isnt it?
         for url in range(len(soup)): soup[url][0] = soup[url][0].replace('https://zenpayments.com/', '').replace('/', '')
-        with open('siteInfo.json', 'w') as file:
-            file.write(json.dumps(soup))
-scrapeBasicBlogInfo()
+        return soup

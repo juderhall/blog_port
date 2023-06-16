@@ -6,7 +6,7 @@ import requests
 headers = {
     'User-Agent' : 'Blog Scraper (https://github.com/juderhall/codespaces-get_blog_info)',
     'Email' : 'jude@zenpayments.com'
-}   
+}
 
 # create varible to hold the url
 web_address = "https://zenpayments.com/virtual-merchant/"
