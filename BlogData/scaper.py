@@ -1,21 +1,20 @@
 import requests
 import re
 from bs4 import BeautifulSoup,NavigableString
-import siteMapScan
 
-def getBlogLayout(test: bool) -> dict:
+def getBlogLayout(slug: str) -> list:
     headers = { "User-Agent": "Blog Scraper https://github.com/juderhall/codespaces-get_blog_info)", "Email": "nick@zenpayments.com"}
-    siteInfo = siteMapScan.scrapeBasicBlogInfo()
-    #All the need is the slug, and the body content
-    response = requests.get('https://zenpayments.com/fantasy-sports-merchant-account/', headers=headers)
+    response = requests.get(f'https://zenpayments.com/{slug}/', headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
-    #element 0 is the header
+
+    #element 0 is the header, 1 is the body, 2 is the footer
     soup = soup.find_all('div', {'class': "elementor-container elementor-column-gap-default"})[1]
     unlovedElements = ['form', 'style', 'link', 'section']
     for unlovedElement in unlovedElements:
         for element in soup.find_all(unlovedElement):
             element.decompose()
     
+    #Recursively unfolding all of the divs
     for tag in soup.find_all('div', class_=lambda x: x and 'elementor' in x):
         tag.unwrap()
     
@@ -43,10 +42,9 @@ def getBlogLayout(test: bool) -> dict:
         elif content.name not in ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'b', 'ol']:
             content.decompose()
 
-    #Remove the navigation bar at the bottom of the page
+    #Remove the navigation buttons at the bottom of the page
     for a in soup.find_all('a', rel='prev'):
         a.decompose()
-
     for a in soup.find_all('a', rel='next'):
         a.decompose()
 
@@ -56,9 +54,10 @@ def getBlogLayout(test: bool) -> dict:
         for attr in attrs_to_delete:
             del tag[attr]
     
-    output = soup.prettify()
     #Removing the parent div tag
+    output = soup.prettify()
 
+    #--Going to a string object below--
     body = re.split(r"<div class=\"elementor-container elementor-column-gap-default\">|</div>", output)
     
     #Filtering newlines, spaces, and empty strings
@@ -68,11 +67,14 @@ def getBlogLayout(test: bool) -> dict:
     body = re.sub(r"\s+", ' ', body)
     #Removing the leading and trailing spaces
     body = body.strip()
+    #Eliminating spaces between open and close tags
+    body = body.replace('> ', '>').replace(' <', '<')
+
+    #Back to a soup object to parse the HTML, 1 level deep
     body = BeautifulSoup(body, 'html.parser')
-    #Now let's parse the HTML, one of the trickest problems in CS (google tony the pony)
     level_one_tags = [child for child in body.children if child.name]
     body = [str(tag) for tag in level_one_tags]
     return body
-getBlogLayout(True)
+
 
     
