@@ -6,7 +6,8 @@ def getBlogLayout(slug: str) -> list:
     headers = { "User-Agent": "Blog Scraper https://github.com/juderhall/codespaces-get_blog_info)", "Email": "nick@zenpayments.com"}
     response = requests.get(f'https://zenpayments.com/{slug}/', headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
-
+    metaDescription = soup.find_all('meta', {'property': "og:description"})[0]
+    title = soup.find_all('h1')[0]
     #element 0 is the header, 1 is the body, 2 is the footer
     soup = soup.find_all('div', {'class': "elementor-container elementor-column-gap-default"})[1]
     unlovedElements = ['form', 'style', 'link', 'section']
@@ -73,7 +74,11 @@ def getBlogLayout(slug: str) -> list:
     #Back to a soup object to parse the HTML, 1 level deep
     body = BeautifulSoup(body, 'html.parser')
     level_one_tags = [child for child in body.children if child.name]
-    body = [str(tag) for tag in level_one_tags]
+    body = {
+        'meta': metaDescription,
+        'title': title,
+        'body':[str(tag) for tag in level_one_tags]
+        }
     return body
 
 

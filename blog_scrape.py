@@ -5,7 +5,6 @@ from urllib.parse import urlparse
 def extract_slug(web_address):
     parsed_url = urlparse(web_address)
     slug = parsed_url.path
-    print(slug)
 
 # scrapes content off blog page and prints to console 
 def extract_specific_text(soup):

@@ -7,20 +7,22 @@ def main():
     #Pull the images and alt text
     allBlogInfo = []
     blogSlugsAndDates = siteMapScan.scrapeBasicBlogInfo()
-    print(blogSlugsAndDates)
     for blogInfo in blogSlugsAndDates: 
         slug = blogInfo[0]
         date = blogInfo[1].split('+')[0]
-        print(f"Scraping {slug}")
         #scrape the blog
         try:
             blogData = scaper.getBlogLayout(slug)
-            for x in blogData: print(x, '\n')
+            blogBody = blogData['body']
+            title = blogData['title'].decode_contents()
+            blogDescription = blogData['meta'].get('content')
             allBlogInfo.append(
                 {
-                    'slug': slug, 
+                    'slug': slug,
+                    'title': title,
+                    'metaDescription': blogDescription, 
                     'date': date,
-                    'blogData': blogData,
+                    'blogBody': blogBody,
                     'succes': True
                 }
             )
@@ -30,7 +32,7 @@ def main():
                 {
                     'slug': slug,
                     'date': date,
-                    'blogData': None,
+                    'blogBody': None,
                     'succes': False
                 }
             )
